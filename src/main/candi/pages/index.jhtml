@@ -1,0 +1,35 @@
+@Page(value = "/", layout = "base")
+public class IndexPage {
+
+    @Autowired
+    private aksra.service.BlogService blog;
+
+    private java.util.List<aksra.model.BlogPost> posts;
+    private int postCount;
+
+    public void init() {
+        posts = blog.findAll();
+        postCount = blog.count();
+    }
+}
+
+<template>
+<h1 style="font-size: 2rem; margin-bottom: 0.3rem;">All Posts</h1>
+<p style="color: #888; font-family: system-ui, sans-serif; font-size: 0.9rem; margin-bottom: 2rem;">{{ postCount }} posts</p>
+
+{{ if posts.isEmpty() }}
+  <p style="color: #666; font-style: italic;">No posts yet. <a href="/new">Write your first post</a>.</p>
+{{ end }}
+
+{{ for post in posts }}
+  <article style="margin-bottom: 2.5rem; padding-bottom: 2rem; border-bottom: 1px solid #eee;">
+    <h2 style="font-size: 1.4rem; margin-bottom: 0.3rem;">
+      <a href="/post/{{ post.id }}" style="color: #1a1a2e;">{{ post.title }}</a>
+    </h2>
+    <p style="color: #999; font-family: system-ui, sans-serif; font-size: 0.8rem; margin-bottom: 0.8rem;">
+      By {{ post.author }} &middot; {{ post.formattedDate }}
+    </p>
+    <p style="color: #555;">{{ post.excerpt }}</p>
+  </article>
+{{ end }}
+</template>
