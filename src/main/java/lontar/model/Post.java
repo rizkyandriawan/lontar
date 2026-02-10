@@ -69,6 +69,21 @@ public class Post {
         return date != null ? date.format(DATE_FMT) : "";
     }
 
+    public String getStatusLabel() {
+        if (status == PostStatus.PUBLISHED) {
+            return "<span class=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700\">Published</span>";
+        }
+        return "<span class=\"inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700\">Draft</span>";
+    }
+
+    public Boolean getIsDraft() {
+        return status == PostStatus.DRAFT;
+    }
+
+    public Boolean getIsPublished() {
+        return status == PostStatus.PUBLISHED;
+    }
+
     // ── Getters & Setters ──
 
     public UUID getId() { return id; }

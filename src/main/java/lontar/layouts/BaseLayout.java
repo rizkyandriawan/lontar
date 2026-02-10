@@ -1,5 +1,6 @@
 package lontar.layouts;
 
+import candi.auth.core.CandiAuthService;
 import candi.runtime.Layout;
 import candi.runtime.Template;
 import lontar.service.SiteSettingsService;
@@ -49,7 +50,12 @@ import org.springframework.context.ApplicationContext;
       <a href="/" class="text-xl font-bold text-gray-900 tracking-tight hover:text-gray-700 no-underline">{{ siteTitle }}</a>
       <div class="flex items-center gap-6 text-sm">
         <a href="/search" class="text-gray-500 hover:text-gray-900 no-underline">Search</a>
-        <a href="/login" class="text-gray-500 hover:text-gray-900 no-underline">Sign in</a>
+        {{ if isAuthenticated }}
+          <a href="/admin" class="text-gray-500 hover:text-gray-900 no-underline">Admin</a>
+        {{ end }}
+        {{ if isAuthenticated == false }}
+          <a href="/login" class="text-gray-500 hover:text-gray-900 no-underline">Sign in</a>
+        {{ end }}
       </div>
     </div>
   </nav>
@@ -72,14 +78,26 @@ public class BaseLayout {
     @Autowired
     private SiteSettingsService siteSettingsService;
 
+    @Autowired
+    private CandiAuthService authService;
+
     protected String siteTitle = "";
+    private Boolean isAuthenticated = false;
 
     @jakarta.annotation.PostConstruct
     public void initLayout() {
         siteTitle = siteSettingsService.getSettings().getTitle();
     }
 
+    public void init() {
+        isAuthenticated = authService.isAuthenticated();
+    }
+
     public String getSiteTitle() {
         return siteTitle;
+    }
+
+    public Boolean getIsAuthenticated() {
+        return isAuthenticated;
     }
 }

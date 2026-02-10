@@ -57,6 +57,7 @@ public class Comment {
     public void setContent(String content) { this.content = content; }
 
     public boolean isApproved() { return approved; }
+    public Boolean getApproved() { return approved; }
     public void setApproved(boolean approved) { this.approved = approved; }
 
     public LocalDateTime getCreatedAt() { return createdAt; }

@@ -25,6 +25,22 @@ public class PostService {
         return postRepository.findByStatusOrderByPublishedAtDesc(PostStatus.PUBLISHED, pageable);
     }
 
+    public Page<Post> findAll(Pageable pageable) {
+        return postRepository.findAllByOrderByCreatedAtDesc(pageable);
+    }
+
+    public Page<Post> findAllByAuthor(User author, Pageable pageable) {
+        return postRepository.findByAuthorOrderByCreatedAtDesc(author, pageable);
+    }
+
+    public long countByStatus(PostStatus status) {
+        return postRepository.countByStatus(status);
+    }
+
+    public long countAll() {
+        return postRepository.count();
+    }
+
     public Optional<Post> findBySlug(String slug) {
         return postRepository.findBySlug(slug);
     }

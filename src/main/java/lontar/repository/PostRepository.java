@@ -17,6 +17,10 @@ public interface PostRepository extends JpaRepository<Post, UUID> {
     Page<Post> findByStatusOrderByPublishedAtDesc(PostStatus status, Pageable pageable);
     Page<Post> findByAuthorAndStatusOrderByPublishedAtDesc(User author, PostStatus status, Pageable pageable);
 
+    Page<Post> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    Page<Post> findByAuthorOrderByCreatedAtDesc(User author, Pageable pageable);
+    long countByStatus(PostStatus status);
+
     @Query("SELECT p FROM Post p JOIN p.tags t WHERE t.slug = :tagSlug AND p.status = :status ORDER BY p.publishedAt DESC")
     Page<Post> findByTagSlugAndStatus(@Param("tagSlug") String tagSlug, @Param("status") PostStatus status, Pageable pageable);
 

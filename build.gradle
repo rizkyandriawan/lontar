@@ -35,7 +35,7 @@ dependencies {
     implementation 'io.candi:candi-web-routes:0.1.0-SNAPSHOT'
     implementation 'io.candi:candi-web-seo:0.1.0-SNAPSHOT'
     implementation 'io.candi:candi-data-querybind:0.1.0-SNAPSHOT'
-    // implementation 'io.candi:candi-saas-storage:0.1.0-SNAPSHOT'  // Enable when MinIO/S3 is configured
+    implementation 'io.candi:candi-saas-storage:0.1.0-SNAPSHOT'
 
     annotationProcessor 'candi:candi-processor:0.1.0-SNAPSHOT'
 

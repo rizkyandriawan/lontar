@@ -78,7 +78,7 @@ public class LoginPage {
 
     public void init() {
         if (authService.isAuthenticated()) {
-            ctx.raw().setAttribute("candi.redirect", "/");
+            ctx.raw().setAttribute("candi.redirect", "/admin");
             return;
         }
 
@@ -108,7 +108,7 @@ public class LoginPage {
 
         try {
             authService.login(username, password);
-            return ActionResult.redirect("/");
+            return ActionResult.redirect("/admin");
         } catch (Exception e) {
             error = "Invalid email or password.";
             return ActionResult.render();
