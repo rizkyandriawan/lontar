@@ -4,6 +4,7 @@ import candi.auth.core.annotation.Protected;
 import candi.runtime.Page;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.Role;
 import lontar.model.User;
 import lontar.service.PostService;
@@ -27,9 +28,9 @@ import java.util.List;
 
   <!-- Status filter -->
   <div class="flex gap-2 mb-6">
-    <a href="/admin/posts" class="px-3 py-1.5 text-sm rounded-lg no-underline {{ if filterAll }}bg-gray-900 text-white{{ end }}{{ if filterAll == false }}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{{ end }}">All</a>
-    <a href="/admin/posts?status=published" class="px-3 py-1.5 text-sm rounded-lg no-underline {{ if filterPublished }}bg-gray-900 text-white{{ end }}{{ if filterPublished == false }}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{{ end }}">Published</a>
-    <a href="/admin/posts?status=draft" class="px-3 py-1.5 text-sm rounded-lg no-underline {{ if filterDraft }}bg-gray-900 text-white{{ end }}{{ if filterDraft == false }}bg-white text-gray-600 border border-gray-200 hover:bg-gray-50{{ end }}">Drafts</a>
+    <a href="/admin/posts" class="px-3 py-1.5 text-sm rounded-lg no-underline {{ statusFilter == "all" ? "bg-gray-900 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50" }}">All</a>
+    <a href="/admin/posts?status=published" class="px-3 py-1.5 text-sm rounded-lg no-underline {{ statusFilter == "published" ? "bg-gray-900 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50" }}">Published</a>
+    <a href="/admin/posts?status=draft" class="px-3 py-1.5 text-sm rounded-lg no-underline {{ statusFilter == "draft" ? "bg-gray-900 text-white" : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50" }}">Drafts</a>
   </div>
 
   {{ if success != null }}
@@ -41,8 +42,7 @@ import java.util.List;
       <div class="text-center py-12">
         <p class="text-gray-400">No posts found.</p>
       </div>
-    {{ end }}
-    {{ if posts.isEmpty() == false }}
+    {{ else }}
       <table class="w-full">
         <thead>
           <tr class="border-b border-gray-100">
@@ -84,6 +84,7 @@ import java.util.List;
   {{ end }}
 </div>
 """)
+@Getter
 public class PostListPage {
 
     @Autowired
@@ -97,25 +98,11 @@ public class PostListPage {
 
     private List<lontar.model.Post> posts;
     private String statusFilter = "all";
-    private Boolean filterAll = true;
-    private Boolean filterPublished = false;
-    private Boolean filterDraft = false;
     private Boolean hasPrevPage;
     private Boolean hasNextPage;
     private int prevPage;
     private int nextPage;
     private String success;
-
-    public List<lontar.model.Post> getPosts() { return posts; }
-    public String getStatusFilter() { return statusFilter; }
-    public Boolean getFilterAll() { return filterAll; }
-    public Boolean getFilterPublished() { return filterPublished; }
-    public Boolean getFilterDraft() { return filterDraft; }
-    public Boolean getHasPrevPage() { return hasPrevPage; }
-    public Boolean getHasNextPage() { return hasNextPage; }
-    public int getPrevPage() { return prevPage; }
-    public int getNextPage() { return nextPage; }
-    public String getSuccess() { return success; }
 
     public void init() {
         User currentUser = userService.getCurrentUser();
@@ -123,12 +110,8 @@ public class PostListPage {
         String status = ctx.query("status");
         if ("published".equals(status)) {
             statusFilter = "published";
-            filterAll = false;
-            filterPublished = true;
         } else if ("draft".equals(status)) {
             statusFilter = "draft";
-            filterAll = false;
-            filterDraft = true;
         }
 
         String pageParam = ctx.query("page");

@@ -5,6 +5,7 @@ import candi.runtime.Page;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
 import candi.web.seo.Seo;
+import lombok.Getter;
 import lontar.model.Post;
 import lontar.service.PostService;
 import lontar.service.SiteSettingsService;
@@ -69,6 +70,7 @@ import org.springframework.data.domain.PageRequest;
   {{ end }}
 </div>
 """)
+@Getter
 public class IndexPage {
 
     @Autowired
@@ -86,13 +88,6 @@ public class IndexPage {
     private int prevPage;
     private int nextPage;
     private String siteDescription;
-
-    public java.util.List<Post> getPosts() { return posts; }
-    public Boolean getHasPrevPage() { return hasPrevPage; }
-    public Boolean getHasNextPage() { return hasNextPage; }
-    public int getPrevPage() { return prevPage; }
-    public int getNextPage() { return nextPage; }
-    public String getSiteDescription() { return siteDescription; }
 
     public void init() {
         siteDescription = settingsService.getSettings().getDescription();

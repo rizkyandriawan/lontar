@@ -2,6 +2,16 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.2'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.graalvm.buildtools.native' version '0.10.4'
+}
+
+graalvmNative {
+    binaries {
+        main {
+            imageName = 'lontar'
+            buildArgs.add('--no-fallback')
+        }
+    }
 }
 
 group = 'lontar'
@@ -37,8 +47,7 @@ dependencies {
     implementation 'io.candi:candi-data-querybind:0.1.0-SNAPSHOT'
     implementation 'io.candi:candi-saas-storage:0.1.0-SNAPSHOT'
 
-    annotationProcessor 'candi:candi-processor:0.1.0-SNAPSHOT'
-
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'candi:candi-processor:0.1.0-SNAPSHOT'
 }

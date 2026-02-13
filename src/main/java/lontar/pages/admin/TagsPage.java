@@ -7,6 +7,7 @@ import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.Role;
 import lontar.model.Tag;
 import lontar.model.User;
@@ -59,8 +60,7 @@ import java.util.UUID;
       <div class="text-center py-12">
         <p class="text-gray-400">No tags yet.</p>
       </div>
-    {{ end }}
-    {{ if tags.isEmpty() == false }}
+    {{ else }}
       <table class="w-full">
         <thead>
           <tr class="border-b border-gray-100">
@@ -94,6 +94,7 @@ import java.util.UUID;
   </div>
 </div>
 """)
+@Getter
 public class TagsPage {
 
     @Autowired
@@ -107,12 +108,6 @@ public class TagsPage {
     private String success;
     private String csrfParameterName;
     private String csrfTokenValue;
-
-    public List<Tag> getTags() { return tags; }
-    public String getError() { return error; }
-    public String getSuccess() { return success; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
 
     public void init() {
         CsrfToken csrf = (CsrfToken) ctx.raw().getAttribute(CsrfToken.class.getName());

@@ -5,6 +5,7 @@ import candi.runtime.Page;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
 import candi.web.seo.Seo;
+import lombok.Getter;
 import lontar.model.Post;
 import lontar.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +67,7 @@ import java.util.List;
   {{ end }}
 </div>
 """)
+@Getter
 public class SearchPage {
 
     @Autowired
@@ -80,13 +82,6 @@ public class SearchPage {
     private Boolean hasNextPage;
     private int prevPage;
     private int nextPage;
-
-    public String getQuery() { return query; }
-    public List<Post> getPosts() { return posts; }
-    public Boolean getHasPrevPage() { return hasPrevPage; }
-    public Boolean getHasNextPage() { return hasNextPage; }
-    public int getPrevPage() { return prevPage; }
-    public int getNextPage() { return nextPage; }
 
     public void init() {
         query = ctx.query("q");

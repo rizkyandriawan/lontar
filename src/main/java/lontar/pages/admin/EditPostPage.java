@@ -6,6 +6,7 @@ import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.Tag;
 import lontar.model.User;
 import lontar.service.PostService;
@@ -29,9 +30,7 @@ import java.util.stream.Collectors;
       <p class="text-gray-400 text-lg">Post not found.</p>
       <a href="/admin/posts" class="text-sm text-gray-900 underline mt-4 inline-block">Back to Posts</a>
     </div>
-  {{ end }}
-
-  {{ if post != null }}
+  {{ else }}
   <div class="flex items-center justify-between mb-6">
     <h1 class="text-2xl font-bold text-gray-900">Edit Post</h1>
     <div class="flex items-center gap-3">
@@ -182,39 +181,8 @@ import java.util.stream.Collectors;
   }
 }
 </script>
-<script type="module">
-  import { ClassicEditor, Essentials, Paragraph, Bold, Italic, Heading, Link, List, BlockQuote, Image, ImageInsertViaUrl, Table, MediaEmbed, CodeBlock, HorizontalLine, Indent, Underline, Strikethrough, SourceEditing, Autoformat, TextTransformation, PasteFromOffice } from 'ckeditor5';
-
-  let ckEditor;
-  const editorEl = document.querySelector('#editor');
-  if (editorEl) {
-    ckEditor = await ClassicEditor.create(editorEl, {
-      plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, Heading, Link, List, BlockQuote, Image, ImageInsertViaUrl, Table, MediaEmbed, CodeBlock, HorizontalLine, Indent, SourceEditing, Autoformat, TextTransformation, PasteFromOffice ],
-      toolbar: {
-        items: [ 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', 'codeBlock', 'insertTable', 'horizontalLine', '|', 'insertImage', 'mediaEmbed', '|', 'indent', 'outdent', '|', 'sourceEditing' ],
-        shouldNotGroupWhenFull: false
-      },
-      heading: {
-        options: [
-          { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
-          { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
-          { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
-          { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' }
-        ]
-      },
-      placeholder: 'Start writing your post...'
-    });
-
-    const existingContent = document.querySelector('#content').value;
-    if (existingContent) {
-      ckEditor.setData(existingContent);
-    }
-
-    document.querySelector('#editorForm')?.addEventListener('submit', () => {
-      document.querySelector('#content').value = ckEditor.getData();
-    });
-  }
-
+<script>
+  // Define Alpine component BEFORE Alpine's defer script initializes
   window.editorApp = function() {
     return {
       title: document.querySelector('#title')?.value || '',
@@ -274,7 +242,7 @@ import java.util.stream.Collectors;
             body: formData
           });
           const data = await res.json();
-          if (data.content && ckEditor) {
+          if (data.content && window.ckEditor) {
             let html = data.content;
             html = html.replace(/^### (.*$)/gm, '<h3>$1</h3>');
             html = html.replace(/^## (.*$)/gm, '<h2>$1</h2>');
@@ -291,7 +259,7 @@ import java.util.stream.Collectors;
               if (block.startsWith('<')) return block;
               return '<p>' + block.replace(/\\n/g, '<br>') + '</p>';
             }).join('\\n');
-            ckEditor.setData(html);
+            window.ckEditor.setData(html);
           } else if (data.error) {
             alert(data.error);
           }
@@ -304,7 +272,40 @@ import java.util.stream.Collectors;
     };
   };
 </script>
+<script type="module">
+  import { ClassicEditor, Essentials, Paragraph, Bold, Italic, Heading, Link, List, BlockQuote, Image, ImageInsertViaUrl, Table, MediaEmbed, CodeBlock, HorizontalLine, Indent, Underline, Strikethrough, SourceEditing, Autoformat, TextTransformation, PasteFromOffice } from 'ckeditor5';
+
+  const editorEl = document.querySelector('#editor');
+  if (editorEl) {
+    window.ckEditor = await ClassicEditor.create(editorEl, {
+      plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, Heading, Link, List, BlockQuote, Image, ImageInsertViaUrl, Table, MediaEmbed, CodeBlock, HorizontalLine, Indent, SourceEditing, Autoformat, TextTransformation, PasteFromOffice ],
+      toolbar: {
+        items: [ 'heading', '|', 'bold', 'italic', 'underline', 'strikethrough', '|', 'link', 'bulletedList', 'numberedList', '|', 'blockQuote', 'codeBlock', 'insertTable', 'horizontalLine', '|', 'insertImage', 'mediaEmbed', '|', 'indent', 'outdent', '|', 'sourceEditing' ],
+        shouldNotGroupWhenFull: false
+      },
+      heading: {
+        options: [
+          { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+          { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+          { model: 'heading3', view: 'h3', title: 'Heading 3', class: 'ck-heading_heading3' },
+          { model: 'heading4', view: 'h4', title: 'Heading 4', class: 'ck-heading_heading4' }
+        ]
+      },
+      placeholder: 'Start writing your post...'
+    });
+
+    const existingContent = document.querySelector('#content').value;
+    if (existingContent) {
+      window.ckEditor.setData(existingContent);
+    }
+
+    document.querySelector('#editorForm')?.addEventListener('submit', () => {
+      document.querySelector('#content').value = window.ckEditor.getData();
+    });
+  }
+</script>
 """)
+@Getter
 public class EditPostPage {
 
     @Autowired
@@ -331,18 +332,6 @@ public class EditPostPage {
     private String postExcerpt = "";
     private String postTags = "";
     private String postCoverImage = "";
-
-    public lontar.model.Post getPost() { return post; }
-    public String getError() { return error; }
-    public String getSuccess() { return success; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
-    public String getPostTitle() { return postTitle; }
-    public String getPostSlug() { return postSlug; }
-    public String getPostContent() { return postContent; }
-    public String getPostExcerpt() { return postExcerpt; }
-    public String getPostTags() { return postTags; }
-    public String getPostCoverImage() { return postCoverImage; }
 
     public void init() {
         CsrfToken csrf = (CsrfToken) ctx.raw().getAttribute(CsrfToken.class.getName());

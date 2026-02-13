@@ -2,6 +2,7 @@ package lontar.layouts;
 
 import candi.runtime.Layout;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.User;
 import lontar.service.SiteSettingsService;
 import lontar.service.UserService;
@@ -104,6 +105,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 </body>
 </html>
 """)
+@Getter
 public class AdminLayout {
 
     @Autowired
@@ -131,8 +133,4 @@ public class AdminLayout {
         }
     }
 
-    public String getSiteTitle() { return siteTitle; }
-    public String getUserName() { return userName; }
-    public String getUserRole() { return userRole; }
-    public String getUserInitial() { return userInitial; }
 }

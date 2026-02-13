@@ -4,6 +4,7 @@ import candi.auth.core.annotation.Public;
 import candi.runtime.Page;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.Post;
 import lontar.model.Tag;
 import lontar.repository.TagRepository;
@@ -22,9 +23,7 @@ import java.util.List;
       <h1 class="text-2xl font-bold font-serif text-gray-900 mb-4">Tag Not Found</h1>
       <a href="/" class="text-gray-900 underline">&larr; Back to home</a>
     </div>
-  {{ end }}
-
-  {{ if tag != null }}
+  {{ else }}
     <header class="mb-12">
       <p class="text-sm font-medium text-gray-400 uppercase tracking-wider mb-2">Tag</p>
       <h1 class="text-3xl font-bold font-serif text-gray-900">{{ tag.name }}</h1>
@@ -75,6 +74,7 @@ import java.util.List;
   {{ end }}
 </div>
 """)
+@Getter
 public class TagPage {
 
     @Autowired
@@ -92,13 +92,6 @@ public class TagPage {
     private Boolean hasNextPage;
     private int prevPage;
     private int nextPage;
-
-    public Tag getTag() { return tag; }
-    public List<Post> getPosts() { return posts; }
-    public Boolean getHasPrevPage() { return hasPrevPage; }
-    public Boolean getHasNextPage() { return hasNextPage; }
-    public int getPrevPage() { return prevPage; }
-    public int getNextPage() { return nextPage; }
 
     public void init() {
         String slug = ctx.path("slug");

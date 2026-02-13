@@ -3,6 +3,7 @@ package lontar.pages.admin;
 import candi.auth.core.annotation.Protected;
 import candi.runtime.Page;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.PostStatus;
 import lontar.service.CommentService;
 import lontar.service.PostService;
@@ -44,6 +45,7 @@ import org.springframework.beans.factory.annotation.Autowired;
   </div>
 </div>
 """)
+@Getter
 public class DashboardPage {
 
     @Autowired
@@ -56,11 +58,6 @@ public class DashboardPage {
     private long publishedPosts;
     private long draftPosts;
     private long totalComments;
-
-    public long getTotalPosts() { return totalPosts; }
-    public long getPublishedPosts() { return publishedPosts; }
-    public long getDraftPosts() { return draftPosts; }
-    public long getTotalComments() { return totalComments; }
 
     public void init() {
         totalPosts = postService.countAll();

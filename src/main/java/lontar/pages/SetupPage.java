@@ -6,6 +6,7 @@ import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.config.SetupRedirectFilter;
 import lontar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ import org.springframework.security.web.csrf.CsrfToken;
   </form>
 </div>
 """)
+@Getter
 public class SetupPage {
 
     @Autowired
@@ -75,10 +77,6 @@ public class SetupPage {
             csrfTokenValue = csrf.getToken();
         }
     }
-
-    public String getError() { return error; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
 
     @Post
     public ActionResult create() {

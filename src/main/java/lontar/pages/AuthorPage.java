@@ -4,6 +4,7 @@ import candi.auth.core.annotation.Public;
 import candi.runtime.Page;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.Post;
 import lontar.model.User;
 import lontar.service.PostService;
@@ -23,9 +24,7 @@ import java.util.UUID;
       <h1 class="text-2xl font-bold font-serif text-gray-900 mb-4">Author Not Found</h1>
       <a href="/" class="text-gray-900 underline">&larr; Back to home</a>
     </div>
-  {{ end }}
-
-  {{ if author != null }}
+  {{ else }}
     <header class="mb-12 flex items-center gap-5">
       {{ if author.avatar != null }}
         <img src="{{ author.avatar }}" alt="{{ author.name }}" class="w-20 h-20 rounded-full">
@@ -76,6 +75,7 @@ import java.util.UUID;
   {{ end }}
 </div>
 """)
+@Getter
 public class AuthorPage {
 
     @Autowired
@@ -93,13 +93,6 @@ public class AuthorPage {
     private Boolean hasNextPage;
     private int prevPage;
     private int nextPage;
-
-    public User getAuthor() { return author; }
-    public List<Post> getPosts() { return posts; }
-    public Boolean getHasPrevPage() { return hasPrevPage; }
-    public Boolean getHasNextPage() { return hasNextPage; }
-    public int getPrevPage() { return prevPage; }
-    public int getNextPage() { return nextPage; }
 
     public void init() {
         String idStr = ctx.path("id");

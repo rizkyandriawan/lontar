@@ -6,6 +6,7 @@ import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.Role;
 import lontar.model.SiteSettings;
 import lontar.model.User;
@@ -64,6 +65,7 @@ import org.springframework.security.web.csrf.CsrfToken;
   </form>
 </div>
 """)
+@Getter
 public class SettingsPage {
 
     @Autowired
@@ -84,15 +86,6 @@ public class SettingsPage {
     private String settingsDescription;
     private int postsPerPage;
     private Boolean allowComments;
-
-    public String getError() { return error; }
-    public String getSuccess() { return success; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
-    public String getSettingsTitle() { return settingsTitle; }
-    public String getSettingsDescription() { return settingsDescription; }
-    public int getPostsPerPage() { return postsPerPage; }
-    public Boolean getAllowComments() { return allowComments; }
 
     public void init() {
         User currentUser = userService.getCurrentUser();

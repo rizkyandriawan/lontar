@@ -3,6 +3,7 @@ package lontar.layouts;
 import candi.auth.core.CandiAuthService;
 import candi.runtime.Layout;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.service.SiteSettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -52,8 +53,7 @@ import org.springframework.context.ApplicationContext;
         <a href="/search" class="text-gray-500 hover:text-gray-900 no-underline">Search</a>
         {{ if isAuthenticated }}
           <a href="/admin" class="text-gray-500 hover:text-gray-900 no-underline">Admin</a>
-        {{ end }}
-        {{ if isAuthenticated == false }}
+        {{ else }}
           <a href="/login" class="text-gray-500 hover:text-gray-900 no-underline">Sign in</a>
         {{ end }}
       </div>
@@ -70,6 +70,7 @@ import org.springframework.context.ApplicationContext;
 </body>
 </html>
 """)
+@Getter
 public class BaseLayout {
 
     @Autowired
@@ -93,11 +94,4 @@ public class BaseLayout {
         isAuthenticated = authService.isAuthenticated();
     }
 
-    public String getSiteTitle() {
-        return siteTitle;
-    }
-
-    public Boolean getIsAuthenticated() {
-        return isAuthenticated;
-    }
 }

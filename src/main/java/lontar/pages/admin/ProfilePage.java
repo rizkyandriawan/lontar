@@ -6,6 +6,7 @@ import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.User;
 import lontar.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,6 +80,7 @@ import org.springframework.security.web.csrf.CsrfToken;
   </form>
 </div>
 """)
+@Getter
 public class ProfilePage {
 
     @Autowired
@@ -93,13 +95,6 @@ public class ProfilePage {
     private String csrfTokenValue;
     private String userName = "";
     private String userBio = "";
-
-    public String getError() { return error; }
-    public String getSuccess() { return success; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
-    public String getUserName() { return userName; }
-    public String getUserBio() { return userBio; }
 
     public void init() {
         CsrfToken csrf = (CsrfToken) ctx.raw().getAttribute(CsrfToken.class.getName());

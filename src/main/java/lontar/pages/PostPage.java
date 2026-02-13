@@ -8,6 +8,7 @@ import candi.runtime.Template;
 import candi.web.seo.Seo;
 import candi.web.seo.SeoField;
 import candi.web.seo.SeoRole;
+import lombok.Getter;
 import lontar.model.Comment;
 import lontar.model.Post;
 import lontar.repository.CommentRepository;
@@ -28,9 +29,7 @@ import java.util.List;
     <p class="text-gray-500 mb-6">The post you're looking for doesn't exist.</p>
     <a href="/" class="text-gray-900 underline">&larr; Back to home</a>
   </div>
-{{ end }}
-
-{{ if post != null }}
+{{ else }}
   <article class="max-w-3xl mx-auto px-6 pt-12">
     {{ if post.coverImage != null }}
       <img src="{{ post.coverImage }}" alt="{{ post.title }}"
@@ -114,6 +113,7 @@ import java.util.List;
   {{ end }}
 {{ end }}
 """)
+@Getter
 public class PostPage {
 
     @Autowired
@@ -143,16 +143,6 @@ public class PostPage {
 
     @SeoField(SeoRole.IMAGE)
     private String coverImage;
-
-    public Post getPost() { return post; }
-    public List<Comment> getComments() { return comments; }
-    public Boolean getAllowComments() { return allowComments; }
-    public Boolean getCommentSuccess() { return commentSuccess; }
-    public String getTitle() { return title; }
-    public String getExcerpt() { return excerpt; }
-    public String getCoverImage() { return coverImage; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
 
     public void init() {
         CsrfToken csrf = (CsrfToken) ctx.raw().getAttribute(CsrfToken.class.getName());

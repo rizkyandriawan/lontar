@@ -7,6 +7,7 @@ import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
 
@@ -58,6 +59,7 @@ import org.springframework.security.web.csrf.CsrfToken;
   </div>
 </div>
 """)
+@Getter
 public class LoginPage {
 
     @Autowired
@@ -70,11 +72,6 @@ public class LoginPage {
     private String success;
     private String csrfParameterName;
     private String csrfTokenValue;
-
-    public String getError() { return error; }
-    public String getSuccess() { return success; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
 
     public void init() {
         if (authService.isAuthenticated()) {

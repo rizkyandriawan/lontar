@@ -6,6 +6,7 @@ import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.Comment;
 import lontar.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +31,7 @@ import java.util.UUID;
       <div class="text-center py-12">
         <p class="text-gray-400">No comments yet.</p>
       </div>
-    {{ end }}
-    {{ if comments.isEmpty() == false }}
+    {{ else }}
       <div class="divide-y divide-gray-100">
         {{ for comment in comments }}
           <div class="p-6">
@@ -45,8 +45,7 @@ import java.util.UUID;
                   <span class="text-xs text-gray-400">{{ comment.formattedDate }}</span>
                   {{ if comment.approved }}
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">Approved</span>
-                  {{ end }}
-                  {{ if comment.approved == false }}
+                  {{ else }}
                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-700">Pending</span>
                   {{ end }}
                 </div>
@@ -54,20 +53,19 @@ import java.util.UUID;
                 <a href="/post/{{ comment.post.slug }}" class="text-xs text-gray-400 hover:text-gray-600 no-underline">on: {{ comment.post.title }}</a>
               </div>
               <div class="flex items-center gap-2 ml-4">
-                {{ if comment.approved == false }}
-                  <form method="POST" class="inline">
-                    <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrfTokenValue }}">
-                    <input type="hidden" name="action" value="approve">
-                    <input type="hidden" name="commentId" value="{{ comment.id }}">
-                    <button type="submit" class="text-xs px-3 py-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition">Approve</button>
-                  </form>
-                {{ end }}
                 {{ if comment.approved }}
                   <form method="POST" class="inline">
                     <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrfTokenValue }}">
                     <input type="hidden" name="action" value="unapprove">
                     <input type="hidden" name="commentId" value="{{ comment.id }}">
                     <button type="submit" class="text-xs px-3 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg hover:bg-yellow-100 transition">Unapprove</button>
+                  </form>
+                {{ else }}
+                  <form method="POST" class="inline">
+                    <input type="hidden" name="{{ csrfParameterName }}" value="{{ csrfTokenValue }}">
+                    <input type="hidden" name="action" value="approve">
+                    <input type="hidden" name="commentId" value="{{ comment.id }}">
+                    <button type="submit" class="text-xs px-3 py-1.5 bg-green-50 text-green-700 rounded-lg hover:bg-green-100 transition">Approve</button>
                   </form>
                 {{ end }}
                 <form method="POST" class="inline" onsubmit="return confirm('Delete this comment?')">
@@ -96,6 +94,7 @@ import java.util.UUID;
   {{ end }}
 </div>
 """)
+@Getter
 public class CommentsPage {
 
     @Autowired
@@ -112,15 +111,6 @@ public class CommentsPage {
     private int nextPage;
     private String csrfParameterName;
     private String csrfTokenValue;
-
-    public List<Comment> getComments() { return comments; }
-    public String getSuccess() { return success; }
-    public Boolean getHasPrevPage() { return hasPrevPage; }
-    public Boolean getHasNextPage() { return hasNextPage; }
-    public int getPrevPage() { return prevPage; }
-    public int getNextPage() { return nextPage; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
 
     public void init() {
         CsrfToken csrf = (CsrfToken) ctx.raw().getAttribute(CsrfToken.class.getName());

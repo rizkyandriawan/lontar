@@ -6,6 +6,7 @@ import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
+import lombok.Getter;
 import lontar.model.Invite;
 import lontar.model.Role;
 import lontar.model.User;
@@ -136,6 +137,7 @@ import java.util.UUID;
   </div>
 </div>
 """)
+@Getter
 public class TeamPage {
 
     @Autowired
@@ -154,14 +156,6 @@ public class TeamPage {
     private String success;
     private String csrfParameterName;
     private String csrfTokenValue;
-
-    public List<User> getMembers() { return members; }
-    public List<Invite> getPendingInvites() { return pendingInvites; }
-    public Boolean getIsOwner() { return isOwner; }
-    public String getError() { return error; }
-    public String getSuccess() { return success; }
-    public String getCsrfParameterName() { return csrfParameterName; }
-    public String getCsrfTokenValue() { return csrfTokenValue; }
 
     public void init() {
         CsrfToken csrf = (CsrfToken) ctx.raw().getAttribute(CsrfToken.class.getName());
