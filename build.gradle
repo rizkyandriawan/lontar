@@ -29,7 +29,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'candi:candi-spring-boot-starter:0.1.0-SNAPSHOT'
+    implementation 'dev.kakrizky.candi:candi-spring-boot-starter:0.2.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
@@ -49,5 +49,5 @@ dependencies {
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
-    annotationProcessor 'candi:candi-processor:0.1.0-SNAPSHOT'
+    annotationProcessor 'dev.kakrizky.candi:candi-processor:0.2.0'
 }

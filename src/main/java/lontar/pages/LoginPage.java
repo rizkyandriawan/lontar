@@ -6,8 +6,10 @@ import candi.runtime.ActionResult;
 import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
+import candi.runtime.RequestParam;
 import candi.runtime.Template;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.csrf.CsrfToken;
 
@@ -68,6 +70,12 @@ public class LoginPage {
     @Autowired
     private CandiAuthService authService;
 
+    @Setter @RequestParam(name = "setup", required = false)
+    private String setupParam;
+
+    @Setter @RequestParam(name = "error", required = false)
+    private String errorParam;
+
     private String error;
     private String success;
     private String csrfParameterName;
@@ -85,12 +93,10 @@ public class LoginPage {
             csrfTokenValue = csrf.getToken();
         }
 
-        String setupParam = ctx.query("setup");
         if ("success".equals(setupParam)) {
             success = "Account created! Sign in to continue.";
         }
 
-        String errorParam = ctx.query("error");
         if (errorParam != null) {
             error = "oauth".equals(errorParam)
                     ? "Social login failed. You may not have an active invitation."

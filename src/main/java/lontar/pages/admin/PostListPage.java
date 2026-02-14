@@ -2,9 +2,10 @@ package lontar.pages.admin;
 
 import candi.auth.core.annotation.Protected;
 import candi.runtime.Page;
-import candi.runtime.RequestContext;
+import candi.runtime.RequestParam;
 import candi.runtime.Template;
 import lombok.Getter;
+import lombok.Setter;
 import lontar.model.Role;
 import lontar.model.User;
 import lontar.service.PostService;
@@ -93,8 +94,14 @@ public class PostListPage {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private RequestContext ctx;
+    @Setter @RequestParam(name = "status", required = false)
+    private String status;
+
+    @Setter @RequestParam(name = "page", defaultValue = "1")
+    private int pageParam;
+
+    @Setter @RequestParam(name = "msg", required = false)
+    private String msg;
 
     private List<lontar.model.Post> posts;
     private String statusFilter = "all";
@@ -107,20 +114,15 @@ public class PostListPage {
     public void init() {
         User currentUser = userService.getCurrentUser();
 
-        String status = ctx.query("status");
         if ("published".equals(status)) {
             statusFilter = "published";
         } else if ("draft".equals(status)) {
             statusFilter = "draft";
         }
 
-        String pageParam = ctx.query("page");
-        int currentPage = 0;
-        if (pageParam != null) {
-            try { currentPage = Math.max(0, Integer.parseInt(pageParam) - 1); } catch (NumberFormatException ignored) {}
-        }
+        int currentPage = Math.max(0, pageParam - 1);
 
-        if ("deleted".equals(ctx.query("msg"))) {
+        if ("deleted".equals(msg)) {
             success = "Post deleted successfully.";
         }
 

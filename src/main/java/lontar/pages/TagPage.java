@@ -2,9 +2,11 @@ package lontar.pages;
 
 import candi.auth.core.annotation.Public;
 import candi.runtime.Page;
-import candi.runtime.RequestContext;
+import candi.runtime.PathVariable;
+import candi.runtime.RequestParam;
 import candi.runtime.Template;
 import lombok.Getter;
+import lombok.Setter;
 import lontar.model.Post;
 import lontar.model.Tag;
 import lontar.repository.TagRepository;
@@ -83,8 +85,11 @@ public class TagPage {
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private RequestContext ctx;
+    @Setter @PathVariable
+    private String slug;
+
+    @Setter @RequestParam(name = "page", defaultValue = "1")
+    private int pageParam;
 
     private Tag tag;
     private List<Post> posts;
@@ -94,16 +99,9 @@ public class TagPage {
     private int nextPage;
 
     public void init() {
-        String slug = ctx.path("slug");
         tag = tagRepository.findBySlug(slug).orElse(null);
         if (tag != null) {
-            String pageParam = ctx.query("page");
-            int currentPage = 0;
-            if (pageParam != null) {
-                try {
-                    currentPage = Math.max(0, Integer.parseInt(pageParam) - 1);
-                } catch (NumberFormatException ignored) {}
-            }
+            int currentPage = Math.max(0, pageParam - 1);
             org.springframework.data.domain.Page<Post> page = postService.findByTagSlug(slug, PageRequest.of(currentPage, 10));
             posts = page.getContent();
             hasPrevPage = currentPage > 0;

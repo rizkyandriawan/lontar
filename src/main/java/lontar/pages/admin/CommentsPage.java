@@ -5,8 +5,10 @@ import candi.runtime.ActionResult;
 import candi.runtime.Page;
 import candi.runtime.Post;
 import candi.runtime.RequestContext;
+import candi.runtime.RequestParam;
 import candi.runtime.Template;
 import lombok.Getter;
+import lombok.Setter;
 import lontar.model.Comment;
 import lontar.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +105,9 @@ public class CommentsPage {
     @Autowired
     private RequestContext ctx;
 
+    @Setter @RequestParam(name = "page", defaultValue = "1")
+    private int pageParam;
+
     private List<Comment> comments;
     private String success;
     private Boolean hasPrevPage;
@@ -119,11 +124,7 @@ public class CommentsPage {
             csrfTokenValue = csrf.getToken();
         }
 
-        String pageParam = ctx.query("page");
-        int currentPage = 0;
-        if (pageParam != null) {
-            try { currentPage = Math.max(0, Integer.parseInt(pageParam) - 1); } catch (NumberFormatException ignored) {}
-        }
+        int currentPage = Math.max(0, pageParam - 1);
 
         org.springframework.data.domain.Page<Comment> page = commentService.findAll(PageRequest.of(currentPage, 20));
         comments = page.getContent();

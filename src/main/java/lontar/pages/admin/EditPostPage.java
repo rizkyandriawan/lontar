@@ -4,9 +4,11 @@ import candi.auth.core.annotation.Protected;
 import candi.runtime.ActionResult;
 import candi.runtime.Page;
 import candi.runtime.Post;
+import candi.runtime.PathVariable;
 import candi.runtime.RequestContext;
 import candi.runtime.Template;
 import lombok.Getter;
+import lombok.Setter;
 import lontar.model.Tag;
 import lontar.model.User;
 import lontar.service.PostService;
@@ -320,6 +322,9 @@ public class EditPostPage {
     @Autowired
     private RequestContext ctx;
 
+    @Setter @PathVariable
+    private String id;
+
     private lontar.model.Post post;
     private String error;
     private String success;
@@ -340,10 +345,9 @@ public class EditPostPage {
             csrfTokenValue = csrf.getToken();
         }
 
-        String idParam = ctx.path("id");
-        if (idParam != null && !idParam.isBlank()) {
+        if (id != null && !id.isBlank()) {
             try {
-                UUID postId = UUID.fromString(idParam);
+                UUID postId = UUID.fromString(id);
                 post = postService.findById(postId).orElse(null);
                 if (post != null) {
                     postTitle = post.getTitle();

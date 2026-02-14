@@ -2,10 +2,11 @@ package lontar.pages;
 
 import candi.auth.core.annotation.Public;
 import candi.runtime.Page;
-import candi.runtime.RequestContext;
+import candi.runtime.RequestParam;
 import candi.runtime.Template;
 import candi.web.seo.Seo;
 import lombok.Getter;
+import lombok.Setter;
 import lontar.model.Post;
 import lontar.service.PostService;
 import lontar.service.SiteSettingsService;
@@ -79,8 +80,8 @@ public class IndexPage {
     @Autowired
     private SiteSettingsService settingsService;
 
-    @Autowired
-    private RequestContext ctx;
+    @Setter @RequestParam(name = "page", defaultValue = "1")
+    private int pageParam;
 
     private java.util.List<Post> posts;
     private Boolean hasPrevPage;
@@ -91,13 +92,7 @@ public class IndexPage {
 
     public void init() {
         siteDescription = settingsService.getSettings().getDescription();
-        String pageParam = ctx.query("page");
-        int currentPage = 0;
-        if (pageParam != null) {
-            try {
-                currentPage = Math.max(0, Integer.parseInt(pageParam) - 1);
-            } catch (NumberFormatException ignored) {}
-        }
+        int currentPage = Math.max(0, pageParam - 1);
         int perPage = settingsService.getSettings().getPostsPerPage();
         org.springframework.data.domain.Page<Post> page = postService.findPublished(PageRequest.of(currentPage, perPage));
         posts = page.getContent();

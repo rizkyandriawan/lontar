@@ -2,9 +2,11 @@ package lontar.pages;
 
 import candi.auth.core.annotation.Public;
 import candi.runtime.Page;
-import candi.runtime.RequestContext;
+import candi.runtime.PathVariable;
+import candi.runtime.RequestParam;
 import candi.runtime.Template;
 import lombok.Getter;
+import lombok.Setter;
 import lontar.model.Post;
 import lontar.model.User;
 import lontar.service.PostService;
@@ -84,8 +86,11 @@ public class AuthorPage {
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private RequestContext ctx;
+    @Setter @PathVariable
+    private String id;
+
+    @Setter @RequestParam(name = "page", defaultValue = "1")
+    private int pageParam;
 
     private User author;
     private List<Post> posts;
@@ -95,27 +100,19 @@ public class AuthorPage {
     private int nextPage;
 
     public void init() {
-        String idStr = ctx.path("id");
         try {
-            UUID id = UUID.fromString(idStr);
-            author = userService.findById(id).orElse(null);
+            author = userService.findById(UUID.fromString(id)).orElse(null);
         } catch (IllegalArgumentException e) {
             author = null;
         }
         if (author != null) {
-            String pageParam = ctx.query("page");
-            int currentPage = 0;
-            if (pageParam != null) {
-                try {
-                    currentPage = Math.max(0, Integer.parseInt(pageParam) - 1);
-                } catch (NumberFormatException ignored) {}
-            }
+            int currentPage = Math.max(0, pageParam - 1);
             org.springframework.data.domain.Page<Post> page = postService.findByAuthor(author, PageRequest.of(currentPage, 10));
             posts = page.getContent();
             hasPrevPage = currentPage > 0;
             hasNextPage = currentPage < page.getTotalPages() - 1;
-            prevPage = currentPage; // 1-based for display
-            nextPage = currentPage + 2; // 1-based for display
+            prevPage = currentPage;
+            nextPage = currentPage + 2;
         }
     }
 }

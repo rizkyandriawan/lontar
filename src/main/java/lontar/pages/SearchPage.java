@@ -2,10 +2,11 @@ package lontar.pages;
 
 import candi.auth.core.annotation.Public;
 import candi.runtime.Page;
-import candi.runtime.RequestContext;
+import candi.runtime.RequestParam;
 import candi.runtime.Template;
 import candi.web.seo.Seo;
 import lombok.Getter;
+import lombok.Setter;
 import lontar.model.Post;
 import lontar.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,10 +74,12 @@ public class SearchPage {
     @Autowired
     private PostService postService;
 
-    @Autowired
-    private RequestContext ctx;
-
+    @Setter @RequestParam(name = "q", required = false)
     private String query;
+
+    @Setter @RequestParam(name = "page", defaultValue = "1")
+    private int pageParam;
+
     private List<Post> posts;
     private Boolean hasPrevPage;
     private Boolean hasNextPage;
@@ -84,15 +87,8 @@ public class SearchPage {
     private int nextPage;
 
     public void init() {
-        query = ctx.query("q");
         if (query != null && !query.isBlank()) {
-            String pageParam = ctx.query("page");
-            int currentPage = 0;
-            if (pageParam != null) {
-                try {
-                    currentPage = Math.max(0, Integer.parseInt(pageParam) - 1);
-                } catch (NumberFormatException ignored) {}
-            }
+            int currentPage = Math.max(0, pageParam - 1);
             org.springframework.data.domain.Page<Post> page = postService.search(query.trim(), PageRequest.of(currentPage, 10));
             posts = page.getContent();
             hasPrevPage = currentPage > 0;

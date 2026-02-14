@@ -3,12 +3,15 @@ package lontar.pages;
 import candi.auth.core.annotation.Public;
 import candi.runtime.ActionResult;
 import candi.runtime.Page;
+import candi.runtime.PathVariable;
 import candi.runtime.RequestContext;
+import candi.runtime.RequestParam;
 import candi.runtime.Template;
 import candi.web.seo.Seo;
 import candi.web.seo.SeoField;
 import candi.web.seo.SeoRole;
 import lombok.Getter;
+import lombok.Setter;
 import lontar.model.Comment;
 import lontar.model.Post;
 import lontar.repository.CommentRepository;
@@ -128,6 +131,12 @@ public class PostPage {
     @Autowired
     private RequestContext ctx;
 
+    @Setter @PathVariable
+    private String slug;
+
+    @Setter @RequestParam(name = "commented", required = false)
+    private String commented;
+
     private Post post;
     private List<Comment> comments;
     private Boolean allowComments;
@@ -151,7 +160,6 @@ public class PostPage {
             csrfTokenValue = csrf.getToken();
         }
 
-        String slug = ctx.path("slug");
         post = postService.findBySlug(slug).orElse(null);
         if (post != null) {
             title = post.getTitle();
@@ -161,7 +169,7 @@ public class PostPage {
             comments = commentRepository.findByPostAndApprovedTrueOrderByCreatedAtDesc(post);
         }
 
-        if ("true".equals(ctx.query("commented"))) {
+        if ("true".equals(commented)) {
             commentSuccess = true;
         }
     }
